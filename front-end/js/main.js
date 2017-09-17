@@ -15,7 +15,11 @@ let renderProject = function(project) {
 		$("#projects").append(renderedProject);
 		let div = document.getElementById('handler-' + project.onclickInternalId);
 		div.addEventListener('click', function() {
-			loadChild(project.children);
+			if (!project.instructions_url) {
+				loadChild(project.children);
+			} else {
+				selectFinal(project);
+			}
 		});
 		console.log(renderProject);
 	});
@@ -23,19 +27,40 @@ let renderProject = function(project) {
 
 let loadChild = function(children) {
 	$('#projects').empty();
-	if (children) {
-		Array.from(children).forEach(function(child) {
-			renderProject(child);
-		});
-	}
+	Array.from(children).forEach(function(child) {
+		renderProject(child);
+	});
 };
 
-let sendMaterials = function(selection) {
+let selectFinal = function(project) {
+	$('#projects').empty();
+	project.updateMaterials();
+	printMaterials(project);
+};
 
+let printMaterials = function(project) {
+	let total = $('#total');
+	let instructions = $('#instructions_url');
+	let flexbox = $()
 
-	.finally {
-		$('#instructions_url').html(selection.instructions_url);
+	console.log(project)
+	for (let i = 0; i < project.materials.length; i++) {
+		console.log(project.materials[i]);
+		total.append(project.materials[i].name + " | " + project.materials[i].quantity + "\n");
 	}
+
+	instructions.append("Visit for project details:" + project.instructions_url);
+	instructions.attr('href', project.instructions_url);
+
+	total.removeClass('hidden');
+	total.append(project.total);
+};
+
+let getNumber = function() {
+	let number = $('.number').value;
+	project.sendText(number);
+	project.updateMaterials();
+	project.total
 };
 
 Project.top()

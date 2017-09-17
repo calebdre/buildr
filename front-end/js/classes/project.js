@@ -9,7 +9,7 @@ class Project {
 
     static get constants() {
         return {
-          DB_API_URL: 'http://localhost:4000/mock',
+          DB_API_URL: 'http://localhost:2428/',
           CHECK_API_URL: 'http://localhost:5000/check_best_products',
           TEXT_API_URL: 'http://localhost:5000/send_text_message'
         }
