@@ -3,7 +3,5 @@ services:
     app:
         image: hd-api:db
         build: .
-        volumes:
-            - ./hdhBU:/app
         ports:
             - "2428:2428"
