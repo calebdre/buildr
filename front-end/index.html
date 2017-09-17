@@ -39,8 +39,12 @@
   </header>
   <div class="container">
     <div id="projects"></div>
-    <div id="total"></div>
-    <div id="instructions_url"></div>
+    <div id="total" class="hidden"></div>
+    <a href="" id="instructions_url"></a>
+    <form action="" id="send">
+      <input type="button" value="Send to Phone" onClick="getNumber()">
+      <input type="tel" name="phone-number" class="number">
+    </form> 
   </div>
 
 <!-- End Document

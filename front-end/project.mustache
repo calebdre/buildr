@@ -1,14 +1,6 @@
 <div class="project">
-	
-	{{#instructions_url}}
-		<div onClick="sendMaterials(this)">
-	{{/instructions_url}}
-	
-	{{^instructions_url}}
-		<div id="handler-{{onclickInternalId}}">
-	{{/instructions_url}}
-	
-			<img src={{picture_url}}>	
-		</div>
+	<div id="handler-{{onclickInternalId}}">
+		<img src={{picture_url}}>	
+	</div>
 	<h2>{{name}}</h2>
 </div>
