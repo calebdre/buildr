@@ -42,7 +42,7 @@ def mock_data(n):
         project = {
             'name': fake.sentence(2),
             'picture_url': fake.image_url(),
-            'instructions_url': fake.url(),
+            'instructions_url': fake.url() if n - 1 <= 0 else None,
             'children': mock_data(n - 1),
             'materials': mock_materials() if n - 1 <= 0 else []
         }
@@ -57,3 +57,6 @@ def mock():
     data = mock_data(3)
 
     return jsonify(data)
+
+if __name__ == '__main__':
+      app.run(host='0.0.0.0', port=4000)
