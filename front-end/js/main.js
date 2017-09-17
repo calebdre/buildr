@@ -58,7 +58,7 @@ let printMaterials = function(project) {
 		total.append(project.materials[i].name + " | " + project.materials[i].quantity + '</br>');
 	}
 
-	instructions.append("Visit for project details:" + project.instructions_url);
+	instructions.append("Click here for project instructions");
 	instructions.attr('href', project.instructions_url);
 
 	projContainer.css('display', 'initial');
