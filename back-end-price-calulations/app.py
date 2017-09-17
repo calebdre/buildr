@@ -44,8 +44,23 @@ def findStoreID(lat_lon):
 	html = pq(url=urlOpen)
 	storeID = html(".sfstorename:eq(0)").text().split("#", 1)[1]
     
-	return(storeID)
+	return(storeID) # returns a string with the storeID
 
+# format: ("Latitude,Longitude")
+def findStoreAddress(lat_lon):
+    urlOpen = "http://www.homedepot.com/l/search/" + lat_lon +"/full/"
+    html = pq(url=urlOpen)
+    storeAddress = html(".sfstoreaddress:eq(0)").text()
+
+    return(storeAddress) # returns a string with the address
+
+# format: ("internetNum, "storeID")
+def returnProductName(internetNum, storeID):
+    urlOpen = "http://api.homedepot.com/irg/v1?type=json&itemId="+internetNum+"&storeId="+storeID+"&key=8GdxXVBsFAzhkvLfn78NLnzQkDZme0KW"
+    html = pq(url=urlOpen).text()
+    parsed_json = json.loads(html)
+    productName = parsed_json["coordinating"]["items"][0]["info"]
+    return(productName) # returns a string with the product name
 
 # accepts String for location and a list for productIDs ["12321321","12321312"]
 def returnAsileNum(location, productIDs):
