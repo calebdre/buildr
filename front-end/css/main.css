@@ -20,3 +20,7 @@ header h1 {
 	flex-flow: row wrap;
 	justify-content: space-around;
 }
+
+#instructions_url {
+	vertical-align: bottom;	
+}

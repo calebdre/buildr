@@ -23,9 +23,19 @@ let renderProject = function(project) {
 
 let loadChild = function(children) {
 	$('#projects').empty();
-	Array.from(children).forEach(function(child) {
-		renderProject(child);
-	});
+	if (children) {
+		Array.from(children).forEach(function(child) {
+			renderProject(child);
+		});
+	}
+};
+
+let sendMaterials = function(selection) {
+
+
+	.finally {
+		$('#instructions_url').html(selection.instructions_url);
+	}
 };
 
 Project.top()
