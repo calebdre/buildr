@@ -77,6 +77,6 @@ def get_product_ailes():
 	latLng = str(lat) + "," + str(lng)
 	productIds = request.args.get("productIds").split(",")
 
-	return jsonify(returnAsileNum(latLng,productIDs))
+	return jsonify(returnAsileNum(latLng,productIds))
 
 app.run()
