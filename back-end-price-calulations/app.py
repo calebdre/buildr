@@ -85,8 +85,8 @@ def returnProductNameANDsku(internetID, storeID):
 def findStoreID(lat_lon, n=0):
 	urlOpen = "http://www.homedepot.com/l/search/" + lat_lon +"/full/"
 	html = pq(url=urlOpen)
-	storeID = html(".sfstorename:eq("+n+")").text().split("#", 1)[1]
-	storeAddress = html(".sfstoreaddress:eq("+n+")").text()
+	storeID = html(".sfstorename:eq("+str(n)+")").text().split("#", 1)[1]
+	storeAddress = html(".sfstoreaddress:eq("+str(n)+")").text()
     
 	return (storeID, storeAddress) # returns a string with the storeID
 
