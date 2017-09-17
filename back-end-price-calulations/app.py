@@ -77,16 +77,23 @@ def returnAsileNum(location, productIDs):
 
 	for i in range(len(productIDs)):
 		asileNum = "http://api.homedepot.com/v3/catalog/aislebay?storeSkuid="+ str(productNames[i]["sku"]) + "&storeid=" + str(storeId) + "&type=json&key=8GdxXVBsFAzhkvLfn78NLnzQkDZme0KW"
-		print(asileNum)
-		asileNumJson = pq(url=asileNum).text()
-		parsed_json = json.loads(asileNumJson)
-		returnedNumbers["aisles"].append({"name":productNames[i]["name"], "aisle": parsed_json["storeSkus"][0]["aisleBayInfo"]["aisle"]})
+		
+		try:
+			asileNumJson = pq(url=asileNum).text()
+			parsed_json = json.loads(asileNumJson)
+			returnedNumbers["aisles"].append({"name":productNames[i]["name"], "aisle": parsed_json["storeSkus"][0]["aisleBayInfo"]["aisle"]})
+		except:
+			returnedNumbers["aisles"].append({"name":productNames[i]["name"], "aisle": -1})
 	
 	return returnedNumbers
 
 def sendTextMessage(phone, storeAddress, products):
-	message = "The Home Depot on " + storeAddress + " has your items!\n"
-	for product in products: message += "the " + product["name"] + " is in aisle " + product["aisle"] + "\n"
+	message = "Here are the aisle for your products at The Home Depot on " + storeAddress + ":\n\n"
+	for product in products: 
+		if product["aisle"] == -1:
+			message += product["name"] + " was not found at your store :(\n\n" 
+		else:
+			message += "the " + product["name"] + " is in aisle " + product["aisle"] + "\n\n"
 
 	twilioclient = Client(accountSid, authToken)
 	twilioclient.messages.create(
