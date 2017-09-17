@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import pyrebase
 from functools import wraps
 import json
 from flask import Flask, make_response
@@ -14,6 +14,8 @@ authToken  = "8a9ad7fa67f7d9b0bbcf144377b2fed4"
 firebaseConfig = {
   "apiKey": "AIzaSyCeeGGImxoRGjokqulhtW791YpsreZpA8o",
   "databaseURL": "https://d2l-scraper.firebaseio.com/",
+  "authDomain": "",
+  "storageBucket": ""
 }
 
 def add_response_headers(headers={}):
@@ -93,27 +95,31 @@ def findStoreID(lat_lon, n=0):
 # accepts String for location and a list for productIDs ["12321321","12321312"]
 def returnAsileNum(location, productIDs, n=0):
 	storeId, storeAddress = findStoreID(location, n)
+	print(storeAddress, productIDs)
 	returnedNumbers = {}
 	returnedNumbers["address"] = storeAddress
 	returnedNumbers["aisles"] = []
 
+	print(n)
 	productNames = []
 	for p in productIDs:
 		try:
 			name, sku = returnProductNameANDsku(p, storeId)
-			productNames.append({"name": name, "sku": sku})
+			productNames.append({"name": name, "sku": sku, "id": p})
 		except:
-			pass
+			productNames.append({"missing": True})
 
-	for i in range(len(productNames)):
-		asileNum = "http://api.homedepot.com/v3/catalog/aislebay?storeSkuid="+ str(productNames[i]["sku"]) + "&storeid=" + str(storeId) + "&type=json&key=8GdxXVBsFAzhkvLfn78NLnzQkDZme0KW"
+	for product in productNames:
+		if "missing" in product:
+			continue
+		asileNum = "http://api.homedepot.com/v3/catalog/aislebay?storeSkuid="+ str(product["sku"]) + "&storeid=" + str(storeId) + "&type=json&key=8GdxXVBsFAzhkvLfn78NLnzQkDZme0KW"
 		
 		try:
 			asileNumJson = pq(url=asileNum).text()
 			parsed_json = json.loads(asileNumJson)
-			returnedNumbers["aisles"].append({"name":productNames[i]["name"], "aisle": parsed_json["storeSkus"][0]["aisleBayInfo"]["aisle"]})
+			returnedNumbers["aisles"].append({"name":product["name"], "aisle": parsed_json["storeSkus"][0]["aisleBayInfo"]["aisle"]})
 		except:
-			returnedNumbers["aisles"].append({"name":productNames[i]["name"], "aisle": -1})
+			returnedNumbers["aisles"].append({"name":product["name"], "aisle": -1, "id":product["id"]})
 	
 	return returnedNumbers
 
@@ -163,8 +169,101 @@ def get_product_ailes():
 	productIds = request.args.get("productIds").split(",")
 	aisleNums = returnAsileNum(latLng,productIds)
 
-	sendTextMessage(phone, aisleNums["address"], aisleNums["aisles"])
+
+	message = "Here are the aisle for your products at The Home Depot on " + aisleNums["address"] + ":\n\n"
+	for product in aisleNums["aisles"]: 
+		if product["aisle"] == -1:
+			message += product["name"] + " was not found at your store :(\n\n" 
+		else:
+			message += "the " + product["name"] + " is in aisle " + product["aisle"] + "\n\n"
+
+	firebase = pyrebase.initialize_app(firebaseConfig)
+	db = firebase.database()
+	p = {}
+	p["missing_products"] = []
+	p["responses"] = 0
+	p["latlng"] = latLng
+	missing = False
+	for product in aisleNums["aisles"]:
+		if product["aisle"] == -1:
+			p["missing_products"].append(product["id"])
+			missing = True
+	
+	db.child("buildr").child(phone).set(p)
+
+	if missing == True:
+		message += "Would you like to search other Home Depots near you for the missing products? (yes/no)"
+
+	twilioclient = Client(accountSid, authToken)
+	twilioclient.messages.create(
+		to="+1" + str(phone), 
+		from_="+14703090394",
+		body=message)
 
 	return jsonify({"success":True})
+
+
+@app.route("/twilio/text_response", methods=["POST"])
+def twilio_text_response():
+	fromNum = request.form.get("From")[1:]
+	body = request.form.get("Body")
+
+	if body == "yes" or body == "Yes":
+		firebase = pyrebase.initialize_app(firebaseConfig)
+		db = firebase.database()
+		value = db.child("buildr").child(fromNum[1:]).get().val()
+		ids = value["missing_products"]
+		originalResponsesNumber = value["responses"]
+		
+		availabilities = []
+		online = []
+		counter = originalResponsesNumber
+		
+		for i in ids:
+			av = checkForAvailability(value["latlng"], i, originalResponsesNumber + counter)
+			try:
+				while len(av["aisles"]) == 0:
+					counter = counter + 1
+					av = checkForAvailability(value["latlng"], i, originalResponsesNumber + counter)
+					availabilities.append(av)
+			except:
+				av["online"] = True
+				online.append(av)
+
+		db.child("buildr").child(fromNum[1:]).update({"responses": originalResponsesNumber + counter})
+		availabilities = []
+		addresses = {}
+		for av in availabilities: 
+			if av["address"] not in addresses:
+				addresses[av["address"]] = []
+			
+			addresses[av["address"]].append(av)
+		
+		message = "We found "
+		for address in addresses:
+			if len(addresses[address]) == 1:
+				message += addresses[address][0]["name"]
+			elif len(addresses[address]) == 2:
+				message += addresses[address][0]["name"] + " and " + addresses[address][1]["name"]
+			else:
+				message += [a["name"] for a in addresses[address]].join(", ")
+			
+			message += " at The Home Depot on " + address
+		
+		if message == "We found ":
+			message = ""
+		else:
+			message += "\n\n"
+		
+		message += "Sorry, the other products are online only."
+		
+		twilioclient = Client(accountSid, authToken)
+		twilioclient.messages.create(
+			to=fromNum, 
+			from_="+14703090394",
+			body=message)
+
+		return jsonify({"success": True})
+	return jsonify({"success": False})
 
 app.run()
