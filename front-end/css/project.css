@@ -1,5 +1,6 @@
 .project {
-	border: solid black 0.5px;
+	/*border: solid border-top-left-radius: ck 0.5px;*/
+	margin: auto;
 	width: inherit !important;
 	height: 36rem;
 	display: inline-block;
@@ -8,7 +9,7 @@
 	vertical-align: middle;
 	text-align: center;
 	box-shadow: 0.1px 1px 4px 0px #444;
-	border-radius: .33rem;
+	border-radius: .5rem;
 }
 
 .project:hover {
@@ -27,6 +28,6 @@ a {
 }
 
 img {
-	width: 30rem;
+	width: inherit !important;
 	height: 30rem;	
 }

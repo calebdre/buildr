@@ -13,9 +13,16 @@ let renderProject = function(project) {
 		let renderedProject = Mustache.render(template, project);
 		console.log(renderedProject);
 
-		$(".row").append(renderedProject);
+		$("#projects").append(renderedProject);
 	});
 };
+
+// Project.top()
+//   .then((projects) => {
+//     projects.forEach(function(project) {
+//         renderProject(project)
+//     });
+//   });
 
 $.get("http://127.0.0.1:5000/mock", function(projects) {
 	projects.forEach(function(project) {
