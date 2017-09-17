@@ -6,6 +6,12 @@ from flask import Flask
 from flask import request
 from pyquery import PyQuery as pq
 from flask import jsonify
+from twilio.rest import Client
+
+accountSid = "ACef4516da75e401c1417f2d0836738524"
+authToken  = "8a9ad7fa67f7d9b0bbcf144377b2fed4"
+
+twilioclient = Client(accountSid, authToken)
 
 def findBestItem(items):
 	if not isinstance(items, list):
@@ -70,12 +76,20 @@ def returnAsileNum(location, productIDs):
 
 	for i in range(len(productIDs)):
 		asileNum = "http://api.homedepot.com/v3/catalog/aislebay?storeSkuid="+ productIDs[i] + "&storeid=" + storeId + "&type=json&key=8GdxXVBsFAzhkvLfn78NLnzQkDZme0KW"
-		print(asileNum)
 		asileNumJson = pq(url=asileNum).text()
 		parsed_json = json.loads(asileNumJson)
 		returnedNumbers.append({"name":produceNames[i], "aisle": parsed_json["storeSkus"][0]["aisleBayInfo"]["aisle"]})
 	
 	return returnedNumbers
+
+def sendTextMessage(phone, storeAddress, products):
+	message = "The Home Depot on " + storeAddress + " has your items!\n"
+	[message += product["name"] + "in aisle " + product["aisle"] + "\n" for product in products]
+
+	client.messages.create(
+		to="+1" + phone, 
+		from_="+14703090394",
+		body=message)
 
 app = Flask(__name__)
 
@@ -85,12 +99,15 @@ def check_best_products():
 	bestItems = findBestItem(q)
 	return jsonify(bestItems);
 
-@app.route("/get_product_ailes")
+@app.route("/send_text_message")
 def get_product_ailes():
 	lat = request.args.get("lat")
 	lng = request.args.get("lng")
 	latLng = str(lat) + "," + str(lng)
+	phone = request.args.get("phone")
 	productIds = request.args.get("productIds").split(",")
+
+
 
 	return jsonify(returnAsileNum(latLng,productIds))
 
