@@ -1,7 +1,9 @@
 import requests
 import json
 from flask import Flask
+from flask import request
 from pyquery import PyQuery as pq
+from flask import jsonify
 
 def findBestItem(items):
 	if not isinstance(items, list):
@@ -31,13 +33,13 @@ def findBestItem(items):
 	response = {}
 	response["totalPrice"] = totalPrice
 	response["items"] = infos
-	return json.dumps(response, ensure_ascii=False)
+	return response
 
 
-print(findBestItem(["hammer", "nail", "2x4 wood"]))
+# print(findBestItem(["hammer", "nail", "2x4 wood"]))
 
-
-def findStoreID(lat_lon): # format: ("Latitude,Longitude")
+# format: ("Latitude,Longitude")
+def findStoreID(lat_lon):
 	urlOpen = "http://www.homedepot.com/l/search/" + lat_lon +"/full/"
 	html = pq(url=urlOpen)
 	storeID = html(".sfstorename:eq(0)").text().split("#", 1)[1]
@@ -45,7 +47,8 @@ def findStoreID(lat_lon): # format: ("Latitude,Longitude")
 	return(storeID)
 
 
-def returnAsileNum(location, productIDs): # accepts String for location and a list for productIDs ["12321321","12321312"]
+# accepts String for location and a list for productIDs ["12321321","12321312"]
+def returnAsileNum(location, productIDs):
     storeNum = findStoreID(location)
     returnedNumbers = []
     for i in range(len(productIDs)):
@@ -59,8 +62,13 @@ def returnAsileNum(location, productIDs): # accepts String for location and a li
     return(returnedNumbers) # returns a list of asile numbers
 
 
+app = Flask(__name__)
 
-# app = Flask(__name__)
+@app.route("/check_best_products")
+def check_best_products():
+	q = request.args.get("q").split(",")
 
-# app.route("/check_prices")
-# def
+	# return "hello"
+	bestItems = findBestItem(q)
+	return jsonify(bestItems);
+app.run()
