@@ -54,7 +54,7 @@ def mock_data(n):
 @app.route("/mock")
 @add_response_headers({'Access-Control-Allow-Origin': '*'})
 def mock():
-    data = mock_data(5)
+    data = mock_data(6)
 
     return jsonify(data)
 

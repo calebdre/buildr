@@ -1,9 +1,9 @@
 .project {
-	/*border: solid border-top-left-radius: ck 0.5px;*/;
 	margin: auto;
 	margin-bottom: 5rem;
-	width: inherit !important;
+	width: 32rem !important;
 	height: 36rem;
+	overflow: hidden;
 	display: inline-block;
 	line-height: 1.4;
 	color: #444;

@@ -1,5 +1,14 @@
 header {
-	height: 10rem;
+	height: 8rem;
+	border-bottom: 4px solid orange;
+	margin-bottom: 2rem;
+}
+
+header h1 {
+    font-family: 'Hammersmith One', sans-serif;
+    font-size: 72px;
+    padding-left: 2rem;
+    vertical-align: middle;
 }
 
 .container {
