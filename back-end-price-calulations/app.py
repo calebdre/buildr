@@ -266,4 +266,5 @@ def twilio_text_response():
 		return jsonify({"success": True})
 	return jsonify({"success": False})
 
-app.run()
+if __name__ == '__main__':
+      app.run(host='0.0.0.0', port=5000)
