@@ -1,9 +1,14 @@
 <div class="project five columns">
+    {{#instructions_url}}
 	<a href={{instructions_url}}>
+    {{/instructions_url}}
 		<div onClick="loadProjects(children)">
 			<img src={{picture_url}}>
 		</div>
+    {{#instructions_url}}
 	</a>
+    {{/instructions_url}}
+
 	</hr>
 	<h2>{{name}}</h2>
 </div>
