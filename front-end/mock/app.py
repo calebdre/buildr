@@ -42,8 +42,9 @@ def mock_data(n):
         project = {
             'name': fake.sentence(2),
             'picture_url': fake.image_url(),
-            'children': mock_data(n - 1),
-            'materials': mock_materials() if n - 1 <= 0 else []
+            'instructions_url': fake.url() if n - 2 <= 0 else None,
+            'children': mock_data(n - 1) if n > 2 else [],
+            'materials': mock_materials() if n - 2 <= 0 else []
         }
 
         projects.append(project)
