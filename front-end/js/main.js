@@ -1,3 +1,9 @@
+let total = $('#total');
+let form = $('#send');
+
+total.hide();
+form.hide();
+
 let loadProjects = function(projects) {
 	console.log(projects);
 	if (projects) {
@@ -40,19 +46,23 @@ let selectFinal = function(project) {
 
 let printMaterials = function(project) {
 	let total = $('#total');
+	let form = $('#send');
 	let instructions = $('#instructions_url');
+	let projContainer = $('#projects');
 	let flexbox = $()
 
 	console.log(project)
 	for (let i = 0; i < project.materials.length; i++) {
 		console.log(project.materials[i]);
-		total.append(project.materials[i].name + " | " + project.materials[i].quantity + "\n");
+		total.append(project.materials[i].name + " | " + project.materials[i].quantity + '</br>');
 	}
 
 	instructions.append("Visit for project details:" + project.instructions_url);
 	instructions.attr('href', project.instructions_url);
 
-	total.removeClass('hidden');
+	projContainer.css('display', 'block');
+	form.show();
+	total.show();
 	total.append(project.total);
 };
 
