@@ -55,17 +55,17 @@ def returnProductNameANDsku(internetID, storeID):
 # print(findBestItem(["hammer", "nail", "2x4 wood"]))
 
 # format: ("Latitude,Longitude")
-def findStoreID(lat_lon):
+def findStoreID(lat_lon, n=0):
 	urlOpen = "http://www.homedepot.com/l/search/" + lat_lon +"/full/"
 	html = pq(url=urlOpen)
-	storeID = html(".sfstorename:eq(0)").text().split("#", 1)[1]
-	storeAddress = html(".sfstoreaddress:eq(0)").text()
+	storeID = html(".sfstorename:eq("+n+")").text().split("#", 1)[1]
+	storeAddress = html(".sfstoreaddress:eq("+n+")").text()
     
 	return (storeID, storeAddress) # returns a string with the storeID
 
 # accepts String for location and a list for productIDs ["12321321","12321312"]
-def returnAsileNum(location, productIDs):
-	storeId, storeAddress = findStoreID(location)
+def returnAsileNum(location, productIDs, n=0):
+	storeId, storeAddress = findStoreID(location, n)
 	returnedNumbers = {}
 	returnedNumbers["address"] = storeAddress
 	returnedNumbers["aisles"] = []
@@ -86,6 +86,10 @@ def returnAsileNum(location, productIDs):
 			returnedNumbers["aisles"].append({"name":productNames[i]["name"], "aisle": -1})
 	
 	return returnedNumbers
+
+def checkForAvailability(lat_lon,productID,n):
+	return(returnAsileNum(lat_lon, productID, n))
+
 
 def sendTextMessage(phone, storeAddress, products):
 	message = "Here are the aisle for your products at The Home Depot on " + storeAddress + ":\n\n"
