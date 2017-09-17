@@ -1,8 +1,6 @@
 class Material {
-    constructor(name, price, quantity, hd_id) {
+    constructor(name, quantity) {
         this.name = name;
-        this.price = price;
         this.quantity = quantity;
-        this.hd_id = hd_id;
     }
 }
