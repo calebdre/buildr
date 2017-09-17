@@ -19,6 +19,8 @@ def findBestItem(items):
 		info["addToCartLink"] = firstProduct(".pod-plp__atc-bttn a").attr("href")
 		info["productModel"] = firstProduct(".pod-plp__model").text()
 		info["numOfReviews"] = firstProduct(".pod-plp__ratings a").text()[1:][:-1]
+		priceSplitted = firstProduct(".price__wrapper .price").text().split(" ")
+		info["price"] = priceSplitted[0] + priceSplitted[1] + "." + priceSplitted[2]
 		infos.append(info)
 
 	return json.dumps(infos, ensure_ascii=False)
