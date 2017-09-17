@@ -26,7 +26,7 @@ class Project {
     updateMaterials() {
         var elements = this.materials.map((material) => material.name).join().replace(/\s/g, '%20');
         var query = '?q=' + elements;
-        Promise.resolve($.get(Project.constants.CHECK_API_URL + query))
+        return Promise.resolve($.get(Project.constants.CHECK_API_URL + query))
           .then((data) => {
             this.total = data.totalPrice;
             data.items.forEach((item, index) => {

@@ -40,10 +40,10 @@ let loadChild = function(children) {
 
 let selectFinal = function(project) {
 	$('#projects').empty();
-	project.updateMaterials();
-	setTimeout(function(project) {
-		printMaterials(project);
-	}, 2000, project);
+	project.updateMaterials()
+      .then(() => {
+        printMaterials(project);
+      });
 };
 
 let printMaterials = function(project) {
