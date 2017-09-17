@@ -67,8 +67,16 @@ app = Flask(__name__)
 @app.route("/check_best_products")
 def check_best_products():
 	q = request.args.get("q").split(",")
-
-	# return "hello"
 	bestItems = findBestItem(q)
 	return jsonify(bestItems);
+
+@app.route("/get_product_ailes")
+def get_product_ailes():
+	lat = request.args.get("lat")
+	lng = request.args.get("lng")
+	latLng = str(lat) + "," + str(lng)
+	productIds = request.args.get("productIds").split(",")
+
+	return jsonify(returnAsileNum(latLng,productIDs))
+
 app.run()
