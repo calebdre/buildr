@@ -43,6 +43,16 @@ def findBestItem(items):
 	response["items"] = infos
 	return response
 
+# format: ("internetID, storeID")
+def returnProductNameANDsku(internetID, storeID):
+    urlOpen = "http://api.homedepot.com/v3/catalog/products/sku?type=json&itemId="+internetID+"&storeId="+storeID+"&detaAddress=30308&show=pricing,itemAvailability,inventory,aisleBinInfo,media,attributeGroups,ratingsReviews,info,shipping,dimensions,storeAvailability,promotions,fulfillmentOptions&additionalAttributeGrp=notDisplayed&key=8GdxXVBsFAzhkvLfn78NLnzQkDZme0KW"
+    html = pq(url=urlOpen).text()
+    parsed_json = json.loads(html)
+    productLabel = parsed_json["products"]["product"]["skus"]["sku"]["info"]["productLabel"]
+    brandName = parsed_json["products"]["product"]["skus"]["sku"]["info"]["brandName"]
+    productName = brandName + " " + productLabel
+    sku = parsed_json["products"]["product"]["skus"]["sku"]["info"]["storeSkuNumber"]
+    return productName, sku # returns the productName and sku number as strings
 
 # print(findBestItem(["hammer", "nail", "2x4 wood"]))
 
