@@ -1,8 +1,8 @@
-FROM ubuntu:latest
+FROM python:latest
 RUN apt-get update -y
-RUN apt-get install -y python-pip python-dev build-essential
-COPY . /app
+RUN mkdir /app
+COPY requirements.txt /app
 WORKDIR /app
 RUN pip install -r requirements.txt
-ENTRYPOINT ["python"]
-CMD ["app.py"]
+COPY . /app
+CMD ["python", "app.py"]
