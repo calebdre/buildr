@@ -45,18 +45,22 @@ def findStoreID(lat_lon): # format: ("Latitude,Longitude")
 	return(storeID)
 
 
-def returnAsileNum(location, productIDs):
-	storeNum = findStoreID(location)
-	asileNum = "http://api.homedepot.com/v3/catalog/aislebay?storeSkuid=" \
-				+ productIDs + "&storeid="\
-				+ storeNum + "&type=json&key=8GdxXVBsFAzhkvLfn78NLnzQkDZme0KW"
-	asileNumJson = pq(url=asileNum).text()
-	parsed_json = json.loads(asileNumJson)
-	return(parsed_json["storeSkus"][0]["aisleBayInfo"]["aisle"])
+def returnAsileNum(location, productIDs): # accepts String for location and a list for productIDs ["12321321","12321312"]
+    storeNum = findStoreID(location)
+    returnedNumbers = []
+    for i in range(len(productIDs)):
+        asileNum = "http://api.homedepot.com/v3/catalog/aislebay?storeSkuid=" \
+                   + productIDs[i] + "&storeid=" \
+                   + storeNum + "&type=json&key=8GdxXVBsFAzhkvLfn78NLnzQkDZme0KW"
+        asileNumJson = pq(url=asileNum).text()
+        parsed_json = json.loads(asileNumJson)
+        returnedNumbers.append(parsed_json["storeSkus"][0]["aisleBayInfo"]["aisle"])
+
+    return(returnedNumbers) # returns a list of asile numbers
 
 
 
 # app = Flask(__name__)
 
 # app.route("/check_prices")
-# def 
+# def
