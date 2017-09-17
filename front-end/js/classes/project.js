@@ -9,7 +9,7 @@ class Project {
 
     static get constants() {
         return {
-          DB_API_URL: 'http://e5db085a.ngrok.io/',
+          DB_API_URL: 'http://1c987044.ngrok.io',
           CHECK_API_URL: 'http://buildr.ferrerluis.com:5000/check_best_products',
           TEXT_API_URL: 'http://buildr.ferrerluis.com:5000/send_text_message'
         }
