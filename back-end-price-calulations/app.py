@@ -11,8 +11,6 @@ from twilio.rest import Client
 accountSid = "ACef4516da75e401c1417f2d0836738524"
 authToken  = "8a9ad7fa67f7d9b0bbcf144377b2fed4"
 
-twilioclient = Client(accountSid, authToken)
-
 def findBestItem(items):
 	if not isinstance(items, list):
 		items = [items]
@@ -27,7 +25,7 @@ def findBestItem(items):
 		info["imageUrl"] = firstProduct("img").attr("src")
 		info["productName"] = firstProduct(".pod-plp__description").text()
 		info["url"] = "http://www.homedepot.com" + firstProduct(".pod-plp__description a").attr("href")
-		info["productId"] = "http://www.homedepot.com" + info["url"].split("/")[0][-1:0]
+		info["productId"] = info["url"].split("/")[-1]
 		info["addToCartLink"] = firstProduct(".pod-plp__atc-bttn a").attr("href")
 		info["productModel"] = firstProduct(".pod-plp__model").text()
 		info["numOfReviews"] = firstProduct(".pod-plp__ratings a").text()[1:][:-1]
@@ -79,25 +77,29 @@ def returnAsileNum(location, productIDs):
 	storeId, storeAddress = findStoreID(location)
 	returnedNumbers = {}
 	returnedNumbers["address"] = storeAddress
+	returnedNumbers["aisles"] = []
 
 	productNames = []
 	for p in productIDs:
-		productNames.append(returnProductName(p, storeId))
+		name, sku = returnProductNameANDsku(p, storeId)
+		productNames.append({"name": name, "sku": sku})
 
 	for i in range(len(productIDs)):
-		asileNum = "http://api.homedepot.com/v3/catalog/aislebay?storeSkuid="+ productIDs[i] + "&storeid=" + storeId + "&type=json&key=8GdxXVBsFAzhkvLfn78NLnzQkDZme0KW"
+		asileNum = "http://api.homedepot.com/v3/catalog/aislebay?storeSkuid="+ str(productNames[i]["sku"]) + "&storeid=" + str(storeId) + "&type=json&key=8GdxXVBsFAzhkvLfn78NLnzQkDZme0KW"
+		print(asileNum)
 		asileNumJson = pq(url=asileNum).text()
 		parsed_json = json.loads(asileNumJson)
-		returnedNumbers.append({"name":produceNames[i], "aisle": parsed_json["storeSkus"][0]["aisleBayInfo"]["aisle"]})
+		returnedNumbers["aisles"].append({"name":productNames[i]["name"], "aisle": parsed_json["storeSkus"][0]["aisleBayInfo"]["aisle"]})
 	
 	return returnedNumbers
 
 def sendTextMessage(phone, storeAddress, products):
 	message = "The Home Depot on " + storeAddress + " has your items!\n"
-	[message += product["name"] + "in aisle " + product["aisle"] + "\n" for product in products]
+	for product in products: message += "the " + product["name"] + " is in aisle " + product["aisle"] + "\n"
 
-	client.messages.create(
-		to="+1" + phone, 
+	twilioclient = Client(accountSid, authToken)
+	twilioclient.messages.create(
+		to="+1" + str(phone), 
 		from_="+14703090394",
 		body=message)
 
@@ -116,9 +118,10 @@ def get_product_ailes():
 	latLng = str(lat) + "," + str(lng)
 	phone = request.args.get("phone")
 	productIds = request.args.get("productIds").split(",")
+	aisleNums = returnAsileNum(latLng,productIds)
 
+	sendTextMessage(phone, aisleNums["address"], aisleNums["aisles"])
 
-
-	return jsonify(returnAsileNum(latLng,productIds))
+	return jsonify({"success":True})
 
 app.run()
