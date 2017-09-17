@@ -63,15 +63,6 @@ def findStoreID(lat_lon):
     
 	return (storeID, storeAddress) # returns a string with the storeID
 
-# format: ("internetNum, "storeID")
-def returnProductName(internetNum, storeID):
-	urlOpen = "http://api.homedepot.com/irg/v1?type=json&itemId="+internetNum+"&storeId="+storeID+"&key=8GdxXVBsFAzhkvLfn78NLnzQkDZme0KW"
-	html = pq(url=urlOpen).text()
-	parsed_json = json.loads(html)
-	productName = parsed_json["coordinating"]["items"][0]["info"]
-	
-	return(productName) # returns a string with the product name
-
 # accepts String for location and a list for productIDs ["12321321","12321312"]
 def returnAsileNum(location, productIDs):
 	storeId, storeAddress = findStoreID(location)
