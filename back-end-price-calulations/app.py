@@ -7,9 +7,17 @@ from flask import request
 from pyquery import PyQuery as pq
 from flask import jsonify
 from twilio.rest import Client
+import pyrebase
+
+
 
 accountSid = "ACef4516da75e401c1417f2d0836738524"
 authToken  = "8a9ad7fa67f7d9b0bbcf144377b2fed4"
+
+firebaseConfig = {
+  "apiKey": "AIzaSyCeeGGImxoRGjokqulhtW791YpsreZpA8o",
+  "databaseURL": "https://d2l-scraper.firebaseio.com/",
+}
 
 def add_response_headers(headers={}):
     """This decorator adds the headers passed in to the response"""
@@ -94,10 +102,13 @@ def returnAsileNum(location, productIDs, n=0):
 
 	productNames = []
 	for p in productIDs:
-		name, sku = returnProductNameANDsku(p, storeId)
-		productNames.append({"name": name, "sku": sku})
+		try:
+			name, sku = returnProductNameANDsku(p, storeId)
+			productNames.append({"name": name, "sku": sku})
+		except:
+			pass
 
-	for i in range(len(productIDs)):
+	for i in range(len(productNames)):
 		asileNum = "http://api.homedepot.com/v3/catalog/aislebay?storeSkuid="+ str(productNames[i]["sku"]) + "&storeid=" + str(storeId) + "&type=json&key=8GdxXVBsFAzhkvLfn78NLnzQkDZme0KW"
 		
 		try:
@@ -156,6 +167,10 @@ def get_product_ailes():
 	aisleNums = returnAsileNum(latLng,productIds)
 
 	sendTextMessage(phone, aisleNums["address"], aisleNums["aisles"])
+
+	firebase = pyrebase.initialize_app(firebaseConfig)
+	db = firebase.database()
+
 
 	return jsonify({"success":True})
 
