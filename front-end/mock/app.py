@@ -55,4 +55,5 @@ def mock_data(n):
 @add_response_headers({'Access-Control-Allow-Origin': '*'})
 def mock():
     data = mock_data(3)
+
     return jsonify(data)
