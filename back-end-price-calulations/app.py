@@ -46,6 +46,7 @@ def findBestItem(items):
 			priceSplitted = firstProduct(".price__wrapper .price").text().split(" ")
 			info["price"] = priceSplitted[0] + priceSplitted[1] + "." + priceSplitted[2]
 			info["priceFloat"] = float(priceSplitted[1] + "." + priceSplitted[2])
+			info["found"] = True
 			infos.append(info)
 		except:
 			infos.append({"found":False})
