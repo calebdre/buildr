@@ -55,7 +55,7 @@ let printMaterials = function(project) {
 
 	for (let i = 0; i < project.materials.length; i++) {
 		console.log(project.materials[i]);
-		total.append(project.materials[i].name + " | " + project.materials[i].quantity + '</br>');
+		total.append(project.materials[i].name + " | " + project.materials[i].quantity + " | $" + project.materials[i].price + '</br>');
 	}
 
 	instructions.append("Click here for project instructions");
