@@ -27,3 +27,21 @@ def findBestItem(items):
 
 
 print(findBestItem(["hammer", "nail", "2x4 wood"]))
+
+
+def findStoreID(lat_lon): # format: ("Latitude,Longitude")
+	urlOpen = "http://www.homedepot.com/l/search/" + lat_lon +"/full/"
+		html = pq(url=urlOpen)
+			storeID = html(".sfstorename:eq(0)").text().split("#", 1)[1]
+    return(storeID)
+
+
+def returnAsileNum(location, productIDs):
+	storeNum = findStoreID(location)
+	asileNum = "http://api.homedepot.com/v3/catalog/aislebay?storeSkuid=" \
+				+ productIDs + "&storeid="\
+				+ storeNum + "&type=json&key=8GdxXVBsFAzhkvLfn78NLnzQkDZme0KW"
+	asileNumJson = pq(url=asileNum).text()
+	parsed_json = json.loads(asileNumJson)
+	return(parsed_json["storeSkus"][0]["aisleBayInfo"]["aisle"])
+
