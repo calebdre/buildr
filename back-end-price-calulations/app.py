@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-import requests
+from functools import wraps
 import json
-from flask import Flask
+from flask import Flask, make_response
 from flask import request
 from pyquery import PyQuery as pq
 from flask import jsonify
@@ -10,6 +10,19 @@ from twilio.rest import Client
 
 accountSid = "ACef4516da75e401c1417f2d0836738524"
 authToken  = "8a9ad7fa67f7d9b0bbcf144377b2fed4"
+
+def add_response_headers(headers={}):
+    """This decorator adds the headers passed in to the response"""
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            resp = make_response(f(*args, **kwargs))
+            h = resp.headers
+            for header, value in headers.items():
+                h[header] = value
+            return resp
+        return decorated_function
+    return decorator
 
 def findBestItem(items):
 	if not isinstance(items, list):
@@ -116,6 +129,7 @@ app = Flask(__name__)
 # like passing in "wood" won't work, but "2x4 wood" will
 # example: http://127.0.0.1:5000/check_best_products?q=hammer,nails,2x4%20wood
 @app.route("/check_best_products")
+@add_response_headers({'Access-Control-Allow-Origin': '*'})
 def check_best_products():
 	q = request.args.get("q").split(",")
 	bestItems = findBestItem(q)
@@ -127,6 +141,7 @@ def check_best_products():
 # all in the query parameters of the url.
 # example: http://127.0.0.1:5000/send_text_message?lat=33.7753208&lng=-84.3909989&productIds=205594063,202308501,204673969,205594063&phone=7708810074
 @app.route("/send_text_message")
+@add_response_headers({'Access-Control-Allow-Origin': '*'})
 def get_product_ailes():
 	lat = request.args.get("lat")
 	lng = request.args.get("lng")
