@@ -17,7 +17,7 @@ let renderProject = function(project) {
 	});
 };
 
-$.get("http://127.0.0.1:5000/mock", function(projects) {
+$.get("http://127.0.0.1:4000/mock", function(projects) {
 	projects.forEach(function(project) {
 		renderProject(project)
 	});
