@@ -7,9 +7,6 @@ from flask import request
 from pyquery import PyQuery as pq
 from flask import jsonify
 from twilio.rest import Client
-import pyrebase
-
-
 
 accountSid = "ACef4516da75e401c1417f2d0836738524"
 authToken  = "8a9ad7fa67f7d9b0bbcf144377b2fed4"
@@ -167,10 +164,6 @@ def get_product_ailes():
 	aisleNums = returnAsileNum(latLng,productIds)
 
 	sendTextMessage(phone, aisleNums["address"], aisleNums["aisles"])
-
-	firebase = pyrebase.initialize_app(firebaseConfig)
-	db = firebase.database()
-
 
 	return jsonify({"success":True})
 
