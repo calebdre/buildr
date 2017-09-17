@@ -96,7 +96,8 @@ let showModal = function(object) {
 };
 
 let sendNumber = function(object) {
-	let number = '7708810074';
+	let number = $('.number').val();
+	// let number = '7708810074';
 	object.sendText(number);
 };
 
