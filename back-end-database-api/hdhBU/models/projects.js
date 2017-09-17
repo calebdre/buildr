@@ -33,7 +33,7 @@ function getProjectWithChildren(item, callback) {
 
 		var projectList = results.rows;
 
-		db.query('SELECT * FROM project_material_xref WHERE project_id = ' + item.id, function(err, results) {
+		db.query('SELECT m.name, pmx.material_quantity FROM material as m JOIN project_material_xref as pmx ON m.id = pmx.material_id WHERE pmx.project_id = ' + item.id, function(err, results) {
 			if (err) throw err;
 
 			var materialList = results.rows;
