@@ -25,7 +25,7 @@ def mock_materials():
 
     for i in range(num):
         material = {
-            'name': fake.sentence(2),
+            'name': fake.sentence(2)[:-1],
             'price': randint(0, 100),
             'quantity': randint(0, 20),
             'hd_id': fake.ean13()
@@ -40,7 +40,7 @@ def mock_data(n):
 
     for i in range(n):
         project = {
-            'name': fake.sentence(2),
+            'name': fake.sentence(2)[:-1],
             'picture_url': fake.image_url(),
             'instructions_url': fake.url() if n - 2 <= 0 else None,
             'children': mock_data(n - 1) if n > 2 else [],
