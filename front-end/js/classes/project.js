@@ -9,11 +9,7 @@ class Project {
 
     static get constants() {
         return {
-<<<<<<< Updated upstream
-          DB_API_URL: 'http://1c987044.ngrok.io',
-=======
           DB_API_URL: 'http://bec95337.ngrok.io',
->>>>>>> Stashed changes
           CHECK_API_URL: 'http://buildr.ferrerluis.com:5000/check_best_products',
           TEXT_API_URL: 'http://buildr.ferrerluis.com:5000/send_text_message'
         }
