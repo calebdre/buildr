@@ -103,12 +103,21 @@ def sendTextMessage(phone, storeAddress, products):
 
 app = Flask(__name__)
 
+# pass in q, a list of comma separated strings to be 
+# looked up. These need to be really specific or else it won't work. 
+# like passing in "wood" won't work, but "2x4 wood" will
+# example: http://127.0.0.1:5000/check_best_products?q=hammer,nails,2x4%20wood
 @app.route("/check_best_products")
 def check_best_products():
 	q = request.args.get("q").split(",")
 	bestItems = findBestItem(q)
 	return jsonify(bestItems);
 
+# pass in a lat (latitude), lng (longitude), 
+# phone (just number), and a comma separated 
+# list of product ids obtained from /check_best_products
+# all in the query parameters of the url.
+# example: http://127.0.0.1:5000/send_text_message?lat=33.7753208&lng=-84.3909989&productIds=205594063,202308501,204673969,205594063&phone=7708810074
 @app.route("/send_text_message")
 def get_product_ailes():
 	lat = request.args.get("lat")
