@@ -40,11 +40,24 @@
   <div class="container">
     <a href="" id="instructions_url"></a>
     <div id="projects"></div>
-    <div id="total" class="hidden"></div>
-    <form action="" id="send" class="hidden">
-      <input type="button" value="Send to Phone" onClick="getNumber()">
-      <input type="tel" name="phone-number" class="number">
-    </form> 
+    <div id="total"></div>
+    
+  </div>
+
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close">&times;</span>
+        <h2>Send the list to your phone</h2>
+      </div>
+      <div class="modal-body">
+        <p>Enter your phone number</p>
+        <form id="send">
+          <button class="modalButton">Send</button>
+          <input type="tel" name="phone-number" class="number">
+        </form> 
+      </div>
+    </div>
   </div>
 
 <!-- End Document

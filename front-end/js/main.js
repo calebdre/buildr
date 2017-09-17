@@ -41,7 +41,9 @@ let loadChild = function(children) {
 let selectFinal = function(project) {
 	$('#projects').empty();
 	project.updateMaterials();
-	printMaterials(project);
+	setTimeout(function(project) {
+		printMaterials(project);
+	}, 2000, project);
 };
 
 let printMaterials = function(project) {
@@ -51,7 +53,6 @@ let printMaterials = function(project) {
 	let projContainer = $('#projects');
 	let flexbox = $()
 
-	console.log(project)
 	for (let i = 0; i < project.materials.length; i++) {
 		console.log(project.materials[i]);
 		total.append(project.materials[i].name + " | " + project.materials[i].quantity + '</br>');
@@ -60,17 +61,43 @@ let printMaterials = function(project) {
 	instructions.append("Visit for project details:" + project.instructions_url);
 	instructions.attr('href', project.instructions_url);
 
-	projContainer.css('display', 'block');
+	projContainer.css('display', 'initial');
 	form.show();
 	total.show();
-	total.append(project.total);
+	total.append("$" + project.total);
+
+	showModal(project);
 };
 
-let getNumber = function() {
-	let number = $('.number').value;
-	project.sendText(number);
-	project.updateMaterials();
-	project.total
+let showModal = function(object) {
+	var modal = document.getElementById('myModal');
+	var span = document.getElementsByClassName("close")[0];
+
+	modal.style.display = "block";
+
+    var modalButton = $('.modalButton')
+
+	setTimeout(function() {
+		modalButton.click(function(e) {
+			e.preventDefault();
+			sendNumber(object);
+		});
+	}, 1000)
+
+	span.onclick = function() {
+    	modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+	    if (event.target == modal) {
+	        modal.style.display = "none";
+	    }
+	}	
+};
+
+let sendNumber = function(object) {
+	let number = '7708810074';
+	object.sendText(number);
 };
 
 Project.top()
