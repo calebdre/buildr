@@ -29,7 +29,7 @@ def findBestItem(items):
 print(findBestItem(["hammer", "nail", "2x4 wood"]))
 
 
-def findStoreID(lat_lon):
+def findStoreID(lat_lon): # format: ("Latitude,Longitude")
 	urlOpen = "http://www.homedepot.com/l/search/" + lat_lon +"/full/"
 		html = pq(url=urlOpen)
 			storeID = html(".sfstorename:eq(0)").text().split("#", 1)[1]
