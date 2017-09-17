@@ -1,9 +1,20 @@
 <div class="project">
+	
+	{{#instructions_url}}
 	<a href={{instructions_url}}>
-		<div onClick="loadProjects(children)">
-			<img src={{picture_url}}>
+		<div onClick="sendMaterials(materials)">
+	{{/instructions_url}}
+	
+	{{^instructions_url}}
+		<div id="handler-{{onclickInternalId}}">
+	{{/instructions_url}}
+
+			<img src={{picture_url}}>	
 		</div>
+	
+	{{#instructions_url}}
 	</a>
-	</hr>
+	{{/instructions_url}}
+
 	<h2>{{name}}</h2>
 </div>

@@ -1,6 +1,7 @@
 .project {
-	/*border: solid border-top-left-radius: ck 0.5px;*/
+	/*border: solid border-top-left-radius: ck 0.5px;*/;
 	margin: auto;
+	margin-bottom: 5rem;
 	width: inherit !important;
 	height: 36rem;
 	display: inline-block;

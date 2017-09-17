@@ -42,7 +42,6 @@ def mock_data(n):
         project = {
             'name': fake.sentence(2),
             'picture_url': fake.image_url(),
-            'instructions_url': fake.url(),
             'children': mock_data(n - 1),
             'materials': mock_materials() if n - 1 <= 0 else []
         }
@@ -54,7 +53,7 @@ def mock_data(n):
 @app.route("/mock")
 @add_response_headers({'Access-Control-Allow-Origin': '*'})
 def mock():
-    data = mock_data(3)
+    data = mock_data(5)
 
     return jsonify(data)
 
