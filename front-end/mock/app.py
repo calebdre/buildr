@@ -19,11 +19,11 @@ def add_response_headers(headers={}):
 @app.route("/mock")
 @add_response_headers({'Access-Control-Allow-Origin': '*'})
 def mock():
-    data = {
+    data = [{
         'name': 'Test',
         'picture_url': 'http://www.top13.net/wp-content/uploads/2015/10/perfectly-timed-funny-cat-pictures-5.jpg',
         'instructions_url': 'http://www.instructables.com/id/Coffee-table-for-free/',
         'children': [],
         'materials': []
-    }
+    }]
     return jsonify(data)
